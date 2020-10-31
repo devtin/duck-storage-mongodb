@@ -1,0 +1,109 @@
+{
+  "name": "duck-storage-mongodb",
+  "version": "0.0.1",
+  "description": "mongodb plugin for duck-storage",
+  "author": "Martin Rafael Gonzalez <tin@devtin.io>",
+  "main": "dist/duck-storage-mongodb.js",
+  "scripts": {
+    "build:readme": "jsdoc2md src/**/*.js > README.md -t node_modules/dmd-readme/docs.hbs --plugin dmd-readme -d 3",
+    "build": "rollup -c",
+    "build:live": "nodemon -w src -w test --exec npm run build",
+    "lint": "eslint --ext .js --ignore-path .gitignore src/",
+    "test": "ava --serial --verbose",
+    "release": "standard-version -a"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devtin/duck-storage-mongodb.git"
+  },
+  "keywords": [
+    "duck-storagr",
+    "store",
+    "storage",
+    "mongo",
+    "mongodb"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devtin/duck-storage-mongodb/issues"
+  },
+  "homepage": "https://github.com/devtin/duck-storage-mongodb#readme",
+  "devDependencies": {
+    "@ava/babel": "^1.0.1",
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "ava": "^3.13.0",
+    "babel-eslint": "^10.1.0",
+    "dmd-readme": "^1.0.0",
+    "duck-storage": "0.0.17",
+    "duckfficer": "^2.2.1",
+    "eslint": "^7.10.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-vue": "^7.0.0",
+    "esm": "^3.2.25",
+    "jsdoc-to-markdown": "^6.0.1",
+    "nodemon": "^2.0.4",
+    "rollup": "^2.28.2",
+    "standard-version": "^9.0.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "bson-objectid": "^1.3.1",
+    "lodash": "^4.17.20",
+    "mongodb": "^3.6.2",
+    "pkg-up": "^3.1.0"
+  },
+  "ava": {
+    "babel": true,
+    "files": [
+      "test/**/*.test.js",
+      "src/**/*.unit.js"
+    ],
+    "require": [
+      "esm"
+    ],
+    "snapshotDir": "test/snapshots"
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": [
+      "standard"
+    ],
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "globals": {
+      "BigInt": true
+    },
+    "parserOptions": {
+      "parser": "babel-eslint",
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+    }
+  },
+  "standard-version": {
+    "scripts": {
+      "prerelease": "npm run lint && npm run build",
+      "precommit": "npm run --silent build > /dev/null 2>&1 && git add dist/ -f"
+    }
+  },
+  "config": {
+    "readme": {
+      "header": {
+        "center": false,
+        "image": "https://repository-images.githubusercontent.com/284732527/2b28a880-d57b-11ea-9b43-283e2cdd605c"
+      },
+      "features": {
+        "base": "src/",
+        "match": [
+          "**/*.unit.js"
+        ]
+      }
+    }
+  }
+}
