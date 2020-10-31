@@ -1,5 +1,5 @@
 /*!
- * duck-storage-mongodb v0.0.1
+ * duck-storage-mongodb v0.0.2
  * (c) 2020 Martin Rafael Gonzalez <tin@devtin.io>
  * MIT
  */
@@ -11,7 +11,6 @@ var castArray = require('lodash/castArray');
 var Promise = require('bluebird');
 var mongodb = require('mongodb');
 var flatten = require('lodash/flatten');
-require('bson-objectid');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 

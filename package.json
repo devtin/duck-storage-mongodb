@@ -1,6 +1,6 @@
 {
   "name": "duck-storage-mongodb",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "mongodb plugin for duck-storage",
   "author": "Martin Rafael Gonzalez <tin@devtin.io>",
   "main": "dist/duck-storage-mongodb.js",
@@ -52,7 +52,6 @@
   },
   "dependencies": {
     "bluebird": "^3.7.2",
-    "bson-objectid": "^1.3.1",
     "lodash": "^4.17.20",
     "mongodb": "^3.6.2",
     "pkg-up": "^3.1.0"
