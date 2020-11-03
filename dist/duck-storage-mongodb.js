@@ -1,5 +1,5 @@
 /*!
- * duck-storage-mongodb v0.0.2
+ * duck-storage-mongodb v0.0.3
  * (c) 2020 Martin Rafael Gonzalez <tin@devtin.io>
  * MIT
  */
