@@ -4,7 +4,6 @@ import castArray from 'lodash/castArray'
 import Promise from 'bluebird'
 import { getClient } from './lib/driver.js'
 import { computeKeys } from './lib/compute-keys'
-import ObjectId from 'bson-objectid'
 
 const defaultDbName = kebabCase(require(pkgUp.sync()).name)
 let client
