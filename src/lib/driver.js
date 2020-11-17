@@ -3,7 +3,9 @@ import Promise from 'bluebird'
 
 export const getClient = async (credentials, attempts = 3) => {
   try {
-    return await MongoClient.connect(credentials)
+    return await MongoClient.connect(credentials, {
+      useUnifiedTopology: true
+    })
   } catch (err) {
     if (!attempts) {
       throw err
