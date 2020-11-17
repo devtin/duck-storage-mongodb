@@ -30,7 +30,9 @@ export default function ({
 
       return collection.ensureIndex(...keys)
     })
-    // collection.ensureIndex()
+    // collection.createIndexes()
+
+    duckRack.collection = collection
 
     duckRack.hook('before', 'create', ({ entry }) => {
       return collection.insertOne(entry)
