@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/devtin/duck-storage-mongodb/compare/v0.0.3...v0.0.4) (2020-11-17)
+
+
+### Features
+
+* reference collection in rack ([cdd5e03](https://github.com/devtin/duck-storage-mongodb/commit/cdd5e0369544bb3f741f51dada8fd8857b890e6d))
+* regenerate indexes ([b82d5cd](https://github.com/devtin/duck-storage-mongodb/commit/b82d5cd1c37d57f5367e3116199987ec35cbb767))
+
 ### [0.0.3](https://github.com/devtin/duck-storage-mongodb/compare/v0.0.2...v0.0.3) (2020-11-03)
 
 ### 0.0.2 (2020-10-31)

@@ -1,5 +1,5 @@
 /*!
- * duck-storage-mongodb v0.0.3
+ * duck-storage-mongodb v0.0.4
  * (c) 2020 Martin Rafael Gonzalez <tin@devtin.io>
  * MIT
  */
@@ -22,7 +22,9 @@ var flatten__default = /*#__PURE__*/_interopDefaultLegacy(flatten);
 
 const getClient = async (credentials, attempts = 3) => {
   try {
-    return await mongodb.MongoClient.connect(credentials)
+    return await mongodb.MongoClient.connect(credentials, {
+      useUnifiedTopology: true
+    })
   } catch (err) {
     if (!attempts) {
       throw err
@@ -194,6 +196,7 @@ function index ({
     }
 
     const collection = client.db(dbName).collection(duckRack.name);
+    await collection.dropIndexes();
     const keysToCreate = computeKeys(duckRack.duckModel.schema);
 
     await Promise__default['default'].each(keysToCreate, keys => {
@@ -203,9 +206,11 @@ function index ({
         return
       }
 
-      return collection.ensureIndex(...keys)
+      return collection.createIndexes(...keys)
     });
-    // collection.ensureIndex()
+    // collection.createIndexes()
+
+    duckRack.collection = collection;
 
     duckRack.hook('before', 'create', ({ entry }) => {
       return collection.insertOne(entry)
