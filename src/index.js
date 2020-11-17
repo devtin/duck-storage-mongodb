@@ -19,6 +19,7 @@ export default function ({
     }
 
     const collection = client.db(dbName).collection(duckRack.name)
+    await collection.dropIndexes()
     const keysToCreate = computeKeys(duckRack.duckModel.schema)
 
     await Promise.each(keysToCreate, keys => {
@@ -28,7 +29,7 @@ export default function ({
         return
       }
 
-      return collection.ensureIndex(...keys)
+      return collection.createIndexes(...keys)
     })
     // collection.createIndexes()
 
