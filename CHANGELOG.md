@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/devtin/duck-storage-mongodb/compare/v0.0.4...v0.0.5) (2021-01-11)
+
+
+### Bug Fixes
+
+* silent error when dropping indexes ([88709d1](https://github.com/devtin/duck-storage-mongodb/commit/88709d11cafee89b50d589cf775e8522525e2b52))
+
 ### [0.0.4](https://github.com/devtin/duck-storage-mongodb/compare/v0.0.3...v0.0.4) (2020-11-17)
 
 
