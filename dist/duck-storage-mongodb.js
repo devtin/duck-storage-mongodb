@@ -1,6 +1,6 @@
 /*!
  * duck-storage-mongodb v0.0.4
- * (c) 2020 Martin Rafael Gonzalez <tin@devtin.io>
+ * (c) 2020-2021 Martin Rafael Gonzalez <tin@devtin.io>
  * MIT
  */
 'use strict';
@@ -196,7 +196,11 @@ function index ({
     }
 
     const collection = client.db(dbName).collection(duckRack.name);
-    await collection.dropIndexes();
+    try {
+      await collection.dropIndexes();
+    } catch (err) {
+      // shh...
+    }
     const keysToCreate = computeKeys(duckRack.duckModel.schema);
 
     await Promise__default['default'].each(keysToCreate, keys => {

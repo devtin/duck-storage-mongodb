@@ -19,7 +19,11 @@ export default function ({
     }
 
     const collection = client.db(dbName).collection(duckRack.name)
-    await collection.dropIndexes()
+    try {
+      await collection.dropIndexes()
+    } catch (err) {
+      // shh...
+    }
     const keysToCreate = computeKeys(duckRack.duckModel.schema)
 
     await Promise.each(keysToCreate, keys => {
