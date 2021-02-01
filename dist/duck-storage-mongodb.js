@@ -1,5 +1,5 @@
 /*!
- * duck-storage-mongodb v0.0.5
+ * duck-storage-mongodb v0.0.6
  * (c) 2020-2021 Martin Rafael Gonzalez <tin@devtin.io>
  * MIT
  */
@@ -179,8 +179,6 @@ const computeKeys = (schema) => {
     return castArray__default['default'](index)
   });
 
-  console.log({ groupIndexes });
-
   return indexesToCreate.concat(uniqueKeysToCreate).concat(schemaKeys).filter(payload => {
     return Object.keys(payload).length > 0
   })
@@ -195,7 +193,6 @@ function index ({
   debug = false
 } = {}) {
   return async function ({ duckRack }) {
-    console.log('setting up duck storage mongo');
     if (!client) {
       client = await getClient(credentials);
     }
@@ -207,8 +204,6 @@ function index ({
       // shh...
     }
     const keysToCreate = computeKeys(duckRack.duckModel.schema);
-    console.log(JSON.stringify({ keysToCreate }, null, 2));
-
     await Promise__default['default'].each(keysToCreate, keys => {
       keys = castArray__default['default'](keys);
 
@@ -264,8 +259,6 @@ function index ({
 
         return composer
       };
-
-      console.log('before list', { query, sort, skip, limit });
 
       const docs = await getQueryComposer({ query, skip, sort, limit }).toArray();
 
