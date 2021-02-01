@@ -11,6 +11,7 @@ var castArray = require('lodash/castArray');
 var Promise = require('bluebird');
 var mongodb = require('mongodb');
 var flatten = require('lodash/flatten');
+var ObjectId = require('bson-objectid');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -19,6 +20,7 @@ var kebabCase__default = /*#__PURE__*/_interopDefaultLegacy(kebabCase);
 var castArray__default = /*#__PURE__*/_interopDefaultLegacy(castArray);
 var Promise__default = /*#__PURE__*/_interopDefaultLegacy(Promise);
 var flatten__default = /*#__PURE__*/_interopDefaultLegacy(flatten);
+var ObjectId__default = /*#__PURE__*/_interopDefaultLegacy(ObjectId);
 
 const getClient = async (credentials, attempts = 3) => {
   try {
@@ -177,6 +179,8 @@ const computeKeys = (schema) => {
     return castArray__default['default'](index)
   });
 
+  console.log({ groupIndexes });
+
   return indexesToCreate.concat(uniqueKeysToCreate).concat(schemaKeys).filter(payload => {
     return Object.keys(payload).length > 0
   })
@@ -191,6 +195,7 @@ function index ({
   debug = false
 } = {}) {
   return async function ({ duckRack }) {
+    console.log('setting up duck storage mongo');
     if (!client) {
       client = await getClient(credentials);
     }
@@ -202,6 +207,7 @@ function index ({
       // shh...
     }
     const keysToCreate = computeKeys(duckRack.duckModel.schema);
+    console.log(JSON.stringify({ keysToCreate }, null, 2));
 
     await Promise__default['default'].each(keysToCreate, keys => {
       keys = castArray__default['default'](keys);
@@ -216,11 +222,11 @@ function index ({
 
     duckRack.collection = collection;
 
-    duckRack.hook('before', 'create', ({ entry }) => {
+    duckRack.hook('after', 'create', ({ entry }) => {
       return collection.insertOne(entry)
     });
 
-    duckRack.hook('before', 'update', async ({ oldEntry, newEntry, entry, result }) => {
+    duckRack.hook('after', 'update', async ({ oldEntry, newEntry, entry, result }) => {
       const query = {
         _id: oldEntry._id
       };
@@ -237,17 +243,45 @@ function index ({
       }
     });
 
-    duckRack.hook('before', 'find', async ({ query, result }) => {
-      const docs = await collection.find(query).toArray();
+    // todo: implement sort and limit
+    duckRack.hook('after', 'list', async ({ query, sort, skip, limit, result }) => {
+      const getQueryComposer = ({ query, sort, skip, limit }, composer = collection) => {
+        if (query) {
+          return getQueryComposer({ sort, skip, limit }, composer.find(query))
+        }
+
+        if (sort) {
+          return getQueryComposer({ skip, limit }, composer.sort(sort))
+        }
+
+        if (skip !== undefined) {
+          return getQueryComposer({ limit }, composer.skip(skip))
+        }
+
+        if (limit !== undefined) {
+          return composer.limit(limit)
+        }
+
+        return composer
+      };
+
+      console.log('before list', { query, sort, skip, limit });
+
+      const docs = await getQueryComposer({ query, skip, sort, limit }).toArray();
+
       docs.length > 0 && result.push(...docs);
     });
 
-    duckRack.hook('before', 'deleteById', async ({ _id, result }) => {
+    duckRack.hook('after', 'deleteById', async ({ _id, result }) => {
       const deleted = await collection.deleteOne({ _id });
       result.push(deleted.deletedCount > 0);
     });
 
-    duckRack.hook('before', 'findOneById', async ({ queryInput, result }) => {
+    duckRack.hook('after', 'findOneById', async ({ _id, result }) => {
+      const queryInput = {
+        _id: ObjectId__default['default'](_id)
+      };
+
       const found = await collection.findOne(queryInput);
       found && result.push(found);
     });

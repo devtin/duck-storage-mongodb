@@ -2,6 +2,7 @@ import { computeKeys } from './compute-keys'
 import { Schema } from 'duckfficer'
 import test from 'ava'
 
+// todo: include full text search
 test('computes index keys', async t => {
   const someSchema = new Schema({
     name: {

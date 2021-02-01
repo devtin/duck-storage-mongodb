@@ -4,6 +4,7 @@ import castArray from 'lodash/castArray'
 import Promise from 'bluebird'
 import { getClient } from './lib/driver.js'
 import { computeKeys } from './lib/compute-keys'
+import ObjectId from 'bson-objectid'
 
 const defaultDbName = kebabCase(require(pkgUp.sync()).name)
 let client
@@ -25,7 +26,6 @@ export default function ({
       // shh...
     }
     const keysToCreate = computeKeys(duckRack.duckModel.schema)
-
     await Promise.each(keysToCreate, keys => {
       keys = castArray(keys)
 
@@ -39,11 +39,11 @@ export default function ({
 
     duckRack.collection = collection
 
-    duckRack.hook('before', 'create', ({ entry }) => {
+    duckRack.hook('after', 'create', ({ entry }) => {
       return collection.insertOne(entry)
     })
 
-    duckRack.hook('before', 'update', async ({ oldEntry, newEntry, entry, result }) => {
+    duckRack.hook('after', 'update', async ({ oldEntry, newEntry, entry, result }) => {
       const query = {
         _id: oldEntry._id
       }
@@ -60,17 +60,43 @@ export default function ({
       }
     })
 
-    duckRack.hook('before', 'find', async ({ query, result }) => {
-      const docs = await collection.find(query).toArray()
+    // todo: implement sort and limit
+    duckRack.hook('after', 'list', async ({ query, sort, skip, limit, result }) => {
+      const getQueryComposer = ({ query, sort, skip, limit }, composer = collection) => {
+        if (query) {
+          return getQueryComposer({ sort, skip, limit }, composer.find(query))
+        }
+
+        if (sort) {
+          return getQueryComposer({ skip, limit }, composer.sort(sort))
+        }
+
+        if (skip !== undefined) {
+          return getQueryComposer({ limit }, composer.skip(skip))
+        }
+
+        if (limit !== undefined) {
+          return composer.limit(limit)
+        }
+
+        return composer
+      }
+
+      const docs = await getQueryComposer({ query, skip, sort, limit }).toArray()
+
       docs.length > 0 && result.push(...docs)
     })
 
-    duckRack.hook('before', 'deleteById', async ({ _id, result }) => {
+    duckRack.hook('after', 'deleteById', async ({ _id, result }) => {
       const deleted = await collection.deleteOne({ _id })
       result.push(deleted.deletedCount > 0)
     })
 
-    duckRack.hook('before', 'findOneById', async ({ queryInput, result }) => {
+    duckRack.hook('after', 'findOneById', async ({ _id, result }) => {
+      const queryInput = {
+        _id: ObjectId(_id)
+      }
+
       const found = await collection.findOne(queryInput)
       found && result.push(found)
     })
