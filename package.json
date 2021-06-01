@@ -1,6 +1,6 @@
 {
   "name": "duck-storage-mongodb",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "mongodb plugin for duck-storage",
   "author": "Martin Rafael Gonzalez <tin@devtin.io>",
   "main": "dist/duck-storage-mongodb.js",

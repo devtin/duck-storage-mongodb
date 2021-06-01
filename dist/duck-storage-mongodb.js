@@ -1,5 +1,5 @@
 /*!
- * duck-storage-mongodb v0.0.6
+ * duck-storage-mongodb v0.0.8
  * (c) 2020-2021 Martin Rafael Gonzalez <tin@devtin.io>
  * MIT
  */
@@ -8,7 +8,7 @@
 var pkgUp = require('pkg-up');
 var kebabCase = require('lodash/kebabCase');
 var castArray = require('lodash/castArray');
-var Promise = require('bluebird');
+var Promise$1 = require('bluebird');
 var mongodb = require('mongodb');
 var flatten = require('lodash/flatten');
 var ObjectId = require('bson-objectid');
@@ -18,7 +18,7 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var pkgUp__default = /*#__PURE__*/_interopDefaultLegacy(pkgUp);
 var kebabCase__default = /*#__PURE__*/_interopDefaultLegacy(kebabCase);
 var castArray__default = /*#__PURE__*/_interopDefaultLegacy(castArray);
-var Promise__default = /*#__PURE__*/_interopDefaultLegacy(Promise);
+var Promise__default = /*#__PURE__*/_interopDefaultLegacy(Promise$1);
 var flatten__default = /*#__PURE__*/_interopDefaultLegacy(flatten);
 var ObjectId__default = /*#__PURE__*/_interopDefaultLegacy(ObjectId);
 
