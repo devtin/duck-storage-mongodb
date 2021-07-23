@@ -11,7 +11,7 @@ var castArray = require('lodash/castArray');
 var Promise$1 = require('bluebird');
 var mongodb = require('mongodb');
 var flatten = require('lodash/flatten');
-var ObjectId = require('bson-objectid');
+require('bson-objectid');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -20,7 +20,6 @@ var kebabCase__default = /*#__PURE__*/_interopDefaultLegacy(kebabCase);
 var castArray__default = /*#__PURE__*/_interopDefaultLegacy(castArray);
 var Promise__default = /*#__PURE__*/_interopDefaultLegacy(Promise$1);
 var flatten__default = /*#__PURE__*/_interopDefaultLegacy(flatten);
-var ObjectId__default = /*#__PURE__*/_interopDefaultLegacy(ObjectId);
 
 const getClient = async (credentials, attempts = 3) => {
   try {
@@ -217,11 +216,11 @@ function index ({
 
     duckRack.collection = collection;
 
-    duckRack.hook('after', 'create', ({ entry }) => {
+    duckRack.hook('before', 'create', ({ entry }) => {
       return collection.insertOne(entry)
     });
 
-    duckRack.hook('after', 'update', async ({ oldEntry, newEntry, entry, result }) => {
+    duckRack.hook('before', 'update', async ({ oldEntry, newEntry, entry, result }) => {
       const query = {
         _id: oldEntry._id
       };
@@ -239,7 +238,7 @@ function index ({
     });
 
     // todo: implement sort and limit
-    duckRack.hook('after', 'list', async ({ query, sort, skip, limit, result }) => {
+    duckRack.hook('before', 'list', async ({ query, sort, skip, limit, result }) => {
       const getQueryComposer = ({ query, sort, skip, limit }, composer = collection) => {
         if (query) {
           return getQueryComposer({ sort, skip, limit }, composer.find(query))
@@ -265,14 +264,15 @@ function index ({
       docs.length > 0 && result.push(...docs);
     });
 
-    duckRack.hook('after', 'deleteById', async ({ _id, result }) => {
+    duckRack.hook('before', 'deleteById', async ({ _id, result }) => {
+      const doc = await collection.findOne({ _id });
       const deleted = await collection.deleteOne({ _id });
-      result.push(deleted.deletedCount > 0);
+      if (deleted.deletedCount > 0) result.push(doc);
     });
 
-    duckRack.hook('after', 'findOneById', async ({ _id, result }) => {
+    duckRack.hook('before', 'findOneById', async ({ _id, result }) => {
       const queryInput = {
-        _id: ObjectId__default['default'](_id)
+        _id
       };
 
       const found = await collection.findOne(queryInput);

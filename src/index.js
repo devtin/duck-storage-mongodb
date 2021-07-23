@@ -4,7 +4,6 @@ import castArray from 'lodash/castArray'
 import Promise from 'bluebird'
 import { getClient } from './lib/driver.js'
 import { computeKeys } from './lib/compute-keys'
-import ObjectId from 'bson-objectid'
 
 const defaultDbName = kebabCase(require(pkgUp.sync()).name)
 let client
@@ -39,11 +38,11 @@ export default function ({
 
     duckRack.collection = collection
 
-    duckRack.hook('after', 'create', ({ entry }) => {
+    duckRack.hook('before', 'create', ({ entry }) => {
       return collection.insertOne(entry)
     })
 
-    duckRack.hook('after', 'update', async ({ oldEntry, newEntry, entry, result }) => {
+    duckRack.hook('before', 'update', async ({ oldEntry, newEntry, entry, result }) => {
       const query = {
         _id: oldEntry._id
       }
@@ -61,7 +60,7 @@ export default function ({
     })
 
     // todo: implement sort and limit
-    duckRack.hook('after', 'list', async ({ query, sort, skip, limit, result }) => {
+    duckRack.hook('before', 'list', async ({ query, sort, skip, limit, result }) => {
       const getQueryComposer = ({ query, sort, skip, limit }, composer = collection) => {
         if (query) {
           return getQueryComposer({ sort, skip, limit }, composer.find(query))
@@ -87,14 +86,15 @@ export default function ({
       docs.length > 0 && result.push(...docs)
     })
 
-    duckRack.hook('after', 'deleteById', async ({ _id, result }) => {
+    duckRack.hook('before', 'deleteById', async ({ _id, result }) => {
+      const doc = await collection.findOne({ _id })
       const deleted = await collection.deleteOne({ _id })
-      result.push(deleted.deletedCount > 0)
+      if (deleted.deletedCount > 0) result.push(doc)
     })
 
-    duckRack.hook('after', 'findOneById', async ({ _id, result }) => {
+    duckRack.hook('before', 'findOneById', async ({ _id, result }) => {
       const queryInput = {
-        _id: ObjectId(_id)
+        _id
       }
 
       const found = await collection.findOne(queryInput)
