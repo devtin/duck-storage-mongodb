@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/devtin/duck-storage-mongodb/compare/v0.0.8...v0.0.9) (2021-07-23)
+
+
+### Bug Fixes
+
+* hooks trigger before ([725fb63](https://github.com/devtin/duck-storage-mongodb/commit/725fb631b0bcc2a5f992ad774f994d8737b35283))
+
 ### [0.0.8](https://github.com/devtin/duck-storage-mongodb/compare/v0.0.6...v0.0.8) (2021-06-01)
 
 ### [0.0.6](https://github.com/devtin/duck-storage-mongodb/compare/v0.0.5...v0.0.6) (2021-02-01)
