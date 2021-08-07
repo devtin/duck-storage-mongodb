@@ -8,7 +8,9 @@ import { computeKeys } from './lib/compute-keys'
 const defaultDbName = kebabCase(require(pkgUp.sync()).name)
 let client
 
-export default function ({
+export const name = 'duck-storage-mongodb'
+
+export function handler ({
   credentials = 'mongodb://localhost:27017',
   dbName = defaultDbName,
   debug = false
