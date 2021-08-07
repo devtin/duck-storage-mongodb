@@ -1,9 +1,11 @@
 /*!
- * duck-storage-mongodb v0.0.9
+ * duck-storage-mongodb v0.0.10
  * (c) 2020-2021 Martin Rafael Gonzalez <tin@devtin.io>
  * MIT
  */
 'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 var pkgUp = require('pkg-up');
 var kebabCase = require('lodash/kebabCase');
@@ -21,11 +23,13 @@ var Promise__default = /*#__PURE__*/_interopDefaultLegacy(Promise$1);
 var flatten__default = /*#__PURE__*/_interopDefaultLegacy(flatten);
 
 const getClient = async (credentials, attempts = 3) => {
+  console.log({ credentials });
   try {
     return await mongodb.MongoClient.connect(credentials, {
       useUnifiedTopology: true
     })
   } catch (err) {
+    console.log({ err });
     if (!attempts) {
       throw err
     }
@@ -185,7 +189,9 @@ const computeKeys = (schema) => {
 const defaultDbName = kebabCase__default['default'](require(pkgUp__default['default'].sync()).name);
 let client;
 
-function index ({
+const name = 'duck-storage-mongodb';
+
+function handler ({
   credentials = 'mongodb://localhost:27017',
   dbName = defaultDbName,
   debug = false
@@ -282,4 +288,5 @@ function index ({
   }
 }
 
-module.exports = index;
+exports.handler = handler;
+exports.name = name;
